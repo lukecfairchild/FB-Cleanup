@@ -84,7 +84,10 @@ findParents();
 window.addEventListener( 'scroll', removeSuggestedPosts );
 window.addEventListener( 'scroll', removeSponsoredPosts );
 
-if ( document.getElementById( 'pagelet_canvas_nav_content' ) ) {
-	document.getElementById( 'pagelet_canvas_nav_content' ).remove();
-	document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
-}
+MutationObserver( function () {
+
+	if ( document.getElementById( 'pagelet_canvas_nav_content' ) ) {
+		document.getElementById( 'pagelet_canvas_nav_content' ).remove();
+		document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
+	}
+} );
