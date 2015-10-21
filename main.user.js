@@ -68,7 +68,6 @@ if ( window.top === window.self ) {
 			var check = document.querySelector( locator );
 
 			if ( check ) {
-				console.log( 'is this firing?' );
 				callBack( check );
 
 			} else {
