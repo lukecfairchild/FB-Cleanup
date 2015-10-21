@@ -2,40 +2,18 @@
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
 // //@run-at document-end
-// @version		1.0.2
+// @version		1.0.3
 // @grant		none
 // ==/UserScript==
 
 if ( window.top === window.self ) {
-	var parents = [];
-
-	var findParents = function ( target ) {
-
-		if ( !target ) {
-			element = document.getElementsByTagName( 'textarea' );
-
-			if ( element ) {
-				target = element[ 0 ];
-			}
-		}
-
-		if ( target && target.parentNode ) {
-			parents.push( target );
-			findParents( target.parentNode );
-		}
-	};
-
 	var removeSuggestedPosts = function () {
 
 		var spanTags   = document.getElementsByTagName( 'span' );
 		var searchText = 'Suggested Post';
 		var loopBack   = function ( target ) {
 
-			if ( target.parentNode
-				&& target.parentNode.parentNode
-				&& target.parentNode.parentNode.parentNode
-				&& parents.indexOf( target.parentNode.parentNode.parentNode ) > -1
-			) {
+			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
 
 				if ( target.style.display !== 'none' ) {
 					console.log( 'Removed sponsored post.' );
@@ -59,13 +37,10 @@ if ( window.top === window.self ) {
 
 		var spanTags   = document.getElementsByTagName( 'a' );
 		var searchText = 'Sponsored';
+		var probable;
 		var loopBack   = function ( target ) {
 
-			if ( target.parentNode
-				&& target.parentNode.parentNode
-				&& target.parentNode.parentNode.parentNode
-				&& parents.indexOf( target.parentNode.parentNode.parentNode ) > -1
-			) {
+			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
 
 				if ( target.style.display !== 'none' ) {
 					console.log( 'Removed sponsored post.' );
@@ -84,11 +59,9 @@ if ( window.top === window.self ) {
 		}
 	};
 
-	findParents();
-/*
 	window.addEventListener( 'scroll', removeSuggestedPosts );
 	window.addEventListener( 'scroll', removeSponsoredPosts );
-*/
+
 	var waitFor = function ( locator, callBack ) {
 
 		if ( typeof locator === 'string' ) {
@@ -108,6 +81,10 @@ if ( window.top === window.self ) {
 	};
 
 	waitFor( '#pagelet_canvas_nav_content', function ( target ) {
+
+		// Not sure if this will actually do anything, cause sometimes the chat window isnt shown.
+		removeSuggestedPosts();
+		removeSponsoredPosts();
 
 		target.remove();
 		document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
