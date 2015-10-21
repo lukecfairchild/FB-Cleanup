@@ -85,10 +85,10 @@ if ( window.top === window.self ) {
 	};
 
 	findParents();
-
+/*
 	window.addEventListener( 'scroll', removeSuggestedPosts );
 	window.addEventListener( 'scroll', removeSponsoredPosts );
-
+*/
 	var waitFor = function ( locator, callBack ) {
 
 		if ( typeof locator === 'string' ) {
