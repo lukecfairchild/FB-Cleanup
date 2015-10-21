@@ -1,93 +1,115 @@
 // ==UserScript==
 // @name	FB Cleanup
-// @include	http://www.facebook.com/*
-// @run-at document-end
+// @include	https://www.facebook.com/*
+// //@run-at document-end
 // @version		1.0.1
 // @grant		none
 // ==/UserScript==
 
-var parents = [];
+if ( window.top === window.self ) {
+	var parents = [];
 
-var findParents = function ( target ) {
+	var findParents = function ( target ) {
 
-	if ( !target ) {
-		target = document.getElementsByTagName( 'textarea' )[ 0 ];
-	}
+		if ( !target ) {
+			element = document.getElementsByTagName( 'textarea' );
 
-	if ( target.parentNode ) {
-		parents.push( target );
-		findParents( target.parentNode );
-	}
-};
-
-var removeSuggestedPosts = function () {
-
-	var spanTags   = document.getElementsByTagName( 'span' );
-	var searchText = 'Suggested Post';
-	var loopBack   = function ( target ) {
-
-		if ( target.parentNode
-			&& target.parentNode.parentNode
-			&& target.parentNode.parentNode.parentNode
-			&& parents.indexOf( target.parentNode.parentNode.parentNode ) > -1
-		) {
-
-			if ( target.style.display !== 'none' ) {
-				console.log( 'Removed sponsored post.' );
-				target.style.display = 'none';
+			if ( element ) {
+				target = element[ 0 ];
 			}
+		}
 
-		} else if ( target.parentNode ) {
-			loopBack( target.parentNode );
+		if ( target && target.parentNode ) {
+			parents.push( target );
+			findParents( target.parentNode );
 		}
 	};
 
-	for ( var i = 0; i < spanTags.length; i++ ) {
+	var removeSuggestedPosts = function () {
 
-		if ( spanTags[ i ].textContent == searchText ) {
-			loopBack( spanTags[ i ] );
-		}
-	}
-};
+		var spanTags   = document.getElementsByTagName( 'span' );
+		var searchText = 'Suggested Post';
+		var loopBack   = function ( target ) {
 
-var removeSponsoredPosts = function () {
+			if ( target.parentNode
+				&& target.parentNode.parentNode
+				&& target.parentNode.parentNode.parentNode
+				&& parents.indexOf( target.parentNode.parentNode.parentNode ) > -1
+			) {
 
-	var spanTags   = document.getElementsByTagName( 'a' );
-	var searchText = 'Sponsored';
-	var loopBack   = function ( target ) {
+				if ( target.style.display !== 'none' ) {
+					console.log( 'Removed sponsored post.' );
+					target.style.display = 'none';
+				}
 
-		if ( target.parentNode
-			&& target.parentNode.parentNode
-			&& target.parentNode.parentNode.parentNode
-			&& parents.indexOf( target.parentNode.parentNode.parentNode ) > -1
-		) {
-
-			if ( target.style.display !== 'none' ) {
-				console.log( 'Removed sponsored post.' );
-				target.style.display = 'none';
+			} else if ( target.parentNode ) {
+				loopBack( target.parentNode );
 			}
-		} else if ( target.parentNode ) {
-			loopBack( target.parentNode );
+		};
+
+		for ( var i = 0; i < spanTags.length; i++ ) {
+
+			if ( spanTags[ i ].textContent == searchText ) {
+				loopBack( spanTags[ i ] );
+			}
 		}
 	};
 
-	for ( var i = 0; i < spanTags.length; i++ ) {
+	var removeSponsoredPosts = function () {
 
-		if ( spanTags[ i ].textContent == searchText ) {
-			loopBack( spanTags[ i ] );
+		var spanTags   = document.getElementsByTagName( 'a' );
+		var searchText = 'Sponsored';
+		var loopBack   = function ( target ) {
+
+			if ( target.parentNode
+				&& target.parentNode.parentNode
+				&& target.parentNode.parentNode.parentNode
+				&& parents.indexOf( target.parentNode.parentNode.parentNode ) > -1
+			) {
+
+				if ( target.style.display !== 'none' ) {
+					console.log( 'Removed sponsored post.' );
+					target.style.display = 'none';
+				}
+			} else if ( target.parentNode ) {
+				loopBack( target.parentNode );
+			}
+		};
+
+		for ( var i = 0; i < spanTags.length; i++ ) {
+
+			if ( spanTags[ i ].textContent == searchText ) {
+				loopBack( spanTags[ i ] );
+			}
 		}
-	}
-};
+	};
 
-findParents();
+	findParents();
 
-window.addEventListener( 'scroll', removeSuggestedPosts );
-window.addEventListener( 'scroll', removeSponsoredPosts );
+	window.addEventListener( 'scroll', removeSuggestedPosts );
+	window.addEventListener( 'scroll', removeSponsoredPosts );
 
-MutationObserver( function () {
+	var waitFor = function ( locator, callBack ) {
 
-	if ( document.getElementById( 'pagelet_canvas_nav_content' ) ) {
-		document.getElementById( 'pagelet_canvas_nav_content' ).remove();
+		if ( typeof locator === 'string' ) {
+			var check = document.querySelector( locator );
+
+			if ( check ) {
+				console.log( 'is this firing?' );
+				callBack( check );
+
+			} else {
+				setTimeout( function () {
+
+					waitFor( locator, callBack );
+				}, 1 );
+			}
+		}
+	};
+
+	waitFor( '#pagelet_canvas_nav_content', function ( target ) {
+
+		target.remove();
 		document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
-	}
-} );
+	} );
+}
