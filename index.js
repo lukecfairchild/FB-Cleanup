@@ -1,3 +1,10 @@
+// ==UserScript==
+// @name	FB Cleanup
+// @include	http://www.facebook.com/*
+// @run-at document-end
+// @version		1
+// @grant		none
+// ==/UserScript==
 
 var parents = [];
 
