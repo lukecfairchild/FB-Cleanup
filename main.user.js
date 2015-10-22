@@ -35,7 +35,9 @@ if ( window.top === window.self ) {
 		'wasTaggedInPosts' : false,
 		'sharedPosts'      : false,
 		'viaPosts'         : false,
-		'appSuggestions'   : false
+		'appSuggestions'   : false,
+		'trending'         : false,
+		'suggestedPages'   : false
 	};
 
 	FB.suggestedPosts = function () {
@@ -262,6 +264,20 @@ if ( window.top === window.self ) {
 		if ( event.type === 'load' ) {
 			event.element.remove();
 			document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
+		}
+	};
+
+	FB.trending = function ( event ) {
+
+		if ( event.type === 'load' ) {
+			document.getElementById( 'pagelet_trending_tags_and_topics' ).remove();
+		}
+	};
+
+	FB.suggestedPages = function ( event ) {
+
+		if ( event.type === 'load' ) {
+			document.getElementById( 'pagelet_ego_pane' ).remove();
 		}
 	};
 
