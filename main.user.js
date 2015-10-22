@@ -2,7 +2,7 @@
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
 // //@run-at document-end
-// @version		1.0.4
+// @version		1.0.5
 // @grant		none
 // ==/UserScript==
 
