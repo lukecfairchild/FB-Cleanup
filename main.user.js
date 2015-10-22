@@ -2,7 +2,7 @@
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
 // //@run-at document-end
-// @version		1.0.5
+// @version		1.0.6
 // @grant		none
 // ==/UserScript==
 
@@ -42,263 +42,301 @@ if ( window.top === window.self ) {
 
 	FB.suggestedPosts = function () {
 
-		var tags       = document.getElementsByTagName( 'span' );
-		var searchText = 'Suggested Post';
-		var loopBack   = function ( target ) {
+		this.events = [ 'scroll' ];
+		this.run    = function () {
 
-			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+			var tags       = document.getElementsByTagName( 'span' );
+			var searchText = 'Suggested Post';
+			var loopBack   = function ( target ) {
 
-				if ( target.style.display !== 'none' ) {
-					console.log( 'Removed sponsored post.' );
-					target.style.display = 'none';
+				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+
+					if ( target.style.display !== 'none' ) {
+						console.log( 'Removed sponsored post.' );
+						target.style.display = 'none';
+					}
+
+				} else if ( target.parentNode ) {
+					loopBack( target.parentNode );
 				}
+			};
 
-			} else if ( target.parentNode ) {
-				loopBack( target.parentNode );
-			}
-		};
+			for ( var i = 0; i < tags.length; i++ ) {
 
-		for ( var i = 0; i < tags.length; i++ ) {
-
-			if ( tags[ i ].textContent == searchText ) {
-				loopBack( tags[ i ] );
+				if ( tags[ i ].textContent == searchText ) {
+					loopBack( tags[ i ] );
+				}
 			}
 		}
 	};
 
 	FB.sponsoredPosts = function () {
 
-		var tags       = document.getElementsByTagName( 'a' );
-		var searchText = 'Sponsored';
-		var loopBack   = function ( target ) {
+		this.events = [ 'scroll' ];
+		this.run    = function () {
 
-			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+			var tags       = document.getElementsByTagName( 'a' );
+			var searchText = 'Sponsored';
+			var loopBack   = function ( target ) {
 
-				if ( target.style.display !== 'none' ) {
-					console.log( 'Removed sponsored post.' );
-					target.style.display = 'none';
+				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+
+					if ( target.style.display !== 'none' ) {
+						console.log( 'Removed sponsored post.' );
+						target.style.display = 'none';
+					}
+				} else if ( target.parentNode ) {
+					loopBack( target.parentNode );
 				}
-			} else if ( target.parentNode ) {
-				loopBack( target.parentNode );
+			};
+
+			for ( var i = 0; i < tags.length; i++ ) {
+
+				if ( tags[ i ].textContent == searchText ) {
+					loopBack( tags[ i ] );
+				}
 			}
 		};
-
-		for ( var i = 0; i < tags.length; i++ ) {
-
-			if ( tags[ i ].textContent == searchText ) {
-				loopBack( tags[ i ] );
-			}
-		}
 	};
 
 	FB.likedPosts = function () {
 
-		var tags       = document.getElementsByTagName( 'span' );
-		var searchText = 'Sponsored';
-		var loopBack   = function ( target ) {
+		this.events = [ 'scroll' ];
+		this.run    = function () {
 
-			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+			var tags       = document.getElementsByTagName( 'span' );
+			var searchText = 'Sponsored';
+			var loopBack   = function ( target ) {
 
-				if ( target.style.display !== 'none' ) {
-					console.log( 'Removed liked post.' );
-					target.style.display = 'none';
+				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+
+					if ( target.style.display !== 'none' ) {
+						console.log( 'Removed liked post.' );
+						target.style.display = 'none';
+					}
+				} else if ( target.parentNode ) {
+					loopBack( target.parentNode );
 				}
-			} else if ( target.parentNode ) {
-				loopBack( target.parentNode );
-			}
-		};
+			};
 
-		for ( var i in tags ) {
+			for ( var i in tags ) {
 
-			if ( tags[ i ].textContent
-				&& tags[ i ].textContent.indexOf( 'liked this' ) > -1
-				&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
-			) {
-			    loopBack( tags[ i ] );
+				if ( tags[ i ].textContent
+					&& tags[ i ].textContent.indexOf( 'liked this' ) > -1
+					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				) {
+				    loopBack( tags[ i ] );
+				}
 			}
 		}
 	};
 
 	FB.commentedOnPosts = function () {
 
-		var tags       = document.getElementsByTagName( 'span' );
-		var searchText = 'commented on';
-		var loopBack   = function ( target ) {
+		this.events = [ 'scroll' ];
+		this.run    = function () {
 
-			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+			var tags       = document.getElementsByTagName( 'span' );
+			var searchText = 'commented on';
+			var loopBack   = function ( target ) {
 
-				if ( target.style.display !== 'none' ) {
-					console.log( 'Removed commented on post.' );
-					target.style.display = 'none';
+				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+
+					if ( target.style.display !== 'none' ) {
+						console.log( 'Removed commented on post.' );
+						target.style.display = 'none';
+					}
+				} else if ( target.parentNode ) {
+					loopBack( target.parentNode );
 				}
-			} else if ( target.parentNode ) {
-				loopBack( target.parentNode );
+			};
+
+			for ( var i in tags ) {
+
+				if ( tags[ i ].textContent
+					&& tags[ i ].textContent.indexOf( searchText ) > -1
+					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				) {
+				    loopBack( tags[ i ] );
+				}
 			}
 		};
-
-		for ( var i in tags ) {
-
-			if ( tags[ i ].textContent
-				&& tags[ i ].textContent.indexOf( searchText ) > -1
-				&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
-			) {
-			    loopBack( tags[ i ] );
-			}
-		}
 	};
 
 	FB.repliedToPosts = function () {
 
-		var tags       = document.getElementsByTagName( 'span' );
-		var searchText = 'replied to';
-		var loopBack   = function ( target ) {
+		this.events = [ 'scroll' ];
+		this.run    = function () {
 
-			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+			var tags       = document.getElementsByTagName( 'span' );
+			var searchText = 'replied to';
+			var loopBack   = function ( target ) {
 
-				if ( target.style.display !== 'none' ) {
-					console.log( 'Removed replied to post.' );
-					target.style.display = 'none';
+				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+
+					if ( target.style.display !== 'none' ) {
+						console.log( 'Removed replied to post.' );
+						target.style.display = 'none';
+					}
+				} else if ( target.parentNode ) {
+					loopBack( target.parentNode );
 				}
-			} else if ( target.parentNode ) {
-				loopBack( target.parentNode );
+			};
+
+			for ( var i in tags ) {
+
+				if ( tags[ i ].textContent
+					&& tags[ i ].textContent.indexOf( searchText ) > -1
+					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				) {
+				    loopBack( tags[ i ] );
+				}
 			}
 		};
-
-		for ( var i in tags ) {
-
-			if ( tags[ i ].textContent
-				&& tags[ i ].textContent.indexOf( searchText ) > -1
-				&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
-			) {
-			    loopBack( tags[ i ] );
-			}
-		}
 	};
 
 	FB.wasTaggedInPosts = function () {
 
-		var tags       = document.getElementsByTagName( 'span' );
-		var searchText = ' was tagged in ';
-		var loopBack   = function ( target ) {
+		this.events = [ 'scroll' ];
+		this.run    = function () {
+			var tags       = document.getElementsByTagName( 'span' );
+			var searchText = ' was tagged in ';
+			var loopBack   = function ( target ) {
 
-			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
 
-				if ( target.style.display !== 'none' ) {
-					console.log( 'Removed was tagged in post.' );
-					target.style.display = 'none';
+					if ( target.style.display !== 'none' ) {
+						console.log( 'Removed was tagged in post.' );
+						target.style.display = 'none';
+					}
+				} else if ( target.parentNode ) {
+					loopBack( target.parentNode );
 				}
-			} else if ( target.parentNode ) {
-				loopBack( target.parentNode );
+			};
+
+			for ( var i in tags ) {
+
+				if ( tags[ i ].textContent
+					&& tags[ i ].textContent.indexOf( searchText ) > -1
+					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				) {
+				    loopBack( tags[ i ] );
+				}
 			}
 		};
-
-		for ( var i in tags ) {
-
-			if ( tags[ i ].textContent
-				&& tags[ i ].textContent.indexOf( searchText ) > -1
-				&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
-			) {
-			    loopBack( tags[ i ] );
-			}
-		}
 	};
 
 	FB.sharedPosts = function () {
 
-		var tags       = document.getElementsByTagName( 'span' );
-		var searchText = ' shared ';
-		var loopBack   = function ( target ) {
+		this.events = [ 'scroll' ];
+		this.run    = function () {
 
-			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+			var tags       = document.getElementsByTagName( 'span' );
+			var searchText = ' shared ';
+			var loopBack   = function ( target ) {
 
-				if ( target.style.display !== 'none' ) {
-					console.log( 'Removed shared post.' );
-					target.style.display = 'none';
+				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+
+					if ( target.style.display !== 'none' ) {
+						console.log( 'Removed shared post.' );
+						target.style.display = 'none';
+					}
+				} else if ( target.parentNode ) {
+					loopBack( target.parentNode );
 				}
-			} else if ( target.parentNode ) {
-				loopBack( target.parentNode );
+			};
+
+			for ( var i in tags ) {
+
+				if ( tags[ i ].textContent
+					&& tags[ i ].textContent.indexOf( searchText ) > -1
+					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				) {
+				    loopBack( tags[ i ] );
+				}
 			}
 		};
-
-		for ( var i in tags ) {
-
-			if ( tags[ i ].textContent
-				&& tags[ i ].textContent.indexOf( searchText ) > -1
-				&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
-			) {
-			    loopBack( tags[ i ] );
-			}
-		}
 	};
 
 	FB.viaPosts = function () {
 
-		var tags       = document.getElementsByTagName( 'span' );
-		var searchText = ' via ';
-		var loopBack   = function ( target ) {
+		this.events = [ 'scroll' ];
+		this.run    = function () {
+			var tags       = document.getElementsByTagName( 'span' );
+			var searchText = ' via ';
+			var loopBack   = function ( target ) {
 
-			if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
 
-				if ( target.style.display !== 'none' ) {
-					console.log( 'Removed via post.' );
-					target.style.display = 'none';
+					if ( target.style.display !== 'none' ) {
+						console.log( 'Removed via post.' );
+						target.style.display = 'none';
+					}
+				} else if ( target.parentNode ) {
+					loopBack( target.parentNode );
 				}
-			} else if ( target.parentNode ) {
-				loopBack( target.parentNode );
+			};
+
+			for ( var i in tags ) {
+
+				if ( tags[ i ].textContent
+					&& tags[ i ].textContent.indexOf( searchText ) > -1
+					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				) {
+				    loopBack( tags[ i ] );
+				}
 			}
 		};
+	};
 
-		for ( var i in tags ) {
+	FB.appSuggestions = function () {
 
-			if ( tags[ i ].textContent
-				&& tags[ i ].textContent.indexOf( searchText ) > -1
-				&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
-			) {
-			    loopBack( tags[ i ] );
-			}
+		this.run    = function () {
+
+			waitFor( '#pagelet_canvas_nav_content', function ( element ) {
+				element.remove();
+				document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
+			} );
 		}
 	};
 
-	FB.appSuggestions = function ( event ) {
+	FB.trending = function () {
 
-		if ( event.type === 'load' ) {
-			event.element.remove();
-			document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
-		}
+		this.run    = function () {
+
+			waitFor( '#pagelet_trending_tags_and_topics', function ( element ) {
+
+				element.remove();
+			} );
+		};
 	};
 
-	FB.trending = function ( event ) {
+	FB.suggestedPages = function () {
 
-		if ( event.type === 'load' ) {
-			document.getElementById( 'pagelet_trending_tags_and_topics' ).remove();
-		}
-	};
+		this.run    = function () {
 
-	FB.suggestedPages = function ( event ) {
+			waitFor( '#pagelet_ego_pane', function ( element ) {
 
-		if ( event.type === 'load' ) {
-			document.getElementById( 'pagelet_ego_pane' ).remove();
-		}
+				element.remove();
+			} );
+		};
 	};
 
 	
 	for ( var func in FB ) {
 
 		if ( !options[ func ] ) {
-			window.addEventListener( 'scroll', FB[ func ].bind( null, 'scroll' ) );
+			( function ( func ) {
+
+				func.run();
+
+				if ( typeof func.events === 'object' ) {
+
+					for ( var i in func.events ) {
+						window.addEventListener( func.events[ i ], func.run );
+					}
+				}
+			} )( new FB[ func ]() );
 		}
 	}
-
-	waitFor( '#pagelet_canvas_nav_content', function ( element ) {
-
-		for ( var func in FB ) {
-
-			if ( !options[ func ] ) {
-				FB[ func ]( {
-					'element' : element,
-					'type'    : 'load'
-				} );
-			}
-		}
-	} );
 }
