@@ -2,7 +2,7 @@
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
 // //@run-at document-end
-// @version		1.0.7
+// @version		1.0.8
 // @grant		none
 // ==/UserScript==
 
@@ -196,18 +196,18 @@ if ( window.top === window.self ) {
 		};
 	};
 
-	FB.wasTaggedInPosts = function () {
+	FB.taggedInPosts = function () {
 
 		this.events = [ 'scroll' ];
 		this.run    = function () {
 			var tags       = document.getElementsByTagName( 'span' );
-			var searchText = ' was tagged in ';
+			var searchText = ' tagged in ';
 			var loopBack   = function ( target ) {
 
 				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
 
 					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed was tagged in post.' );
+						console.log( 'Removed tagged in post.' );
 						target.style.display = 'none';
 					}
 				} else if ( target.parentNode ) {
