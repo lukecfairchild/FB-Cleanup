@@ -2,7 +2,7 @@
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
 // //@run-at document-end
-// @version		1.0.6
+// @version		1.0.7
 // @grant		none
 // ==/UserScript==
 
@@ -27,17 +27,18 @@ var waitFor = function ( locator, callBack ) {
 if ( window.top === window.self ) {
 	var FB      = {};
 	var options = {
-		'suggestedPosts'   : false,
-		'sponsoredPosts'   : false,
-		'likedPosts'       : false,
-		'commentedOnPosts' : false,
-		'repliedToPosts'   : false,
-		'wasTaggedInPosts' : false,
-		'sharedPosts'      : false,
-		'viaPosts'         : false,
-		'appSuggestions'   : false,
-		'trending'         : false,
-		'suggestedPages'   : false
+		'suggestedPosts'      : false,
+		'sponsoredPosts'      : false,
+		'likedPosts'          : false,
+		'commentedOnPosts'    : false,
+		'repliedToPosts'      : false,
+		'wasTaggedInPosts'    : false,
+		'sharedPosts'         : true,
+		'viaPosts'            : true,
+		'wasMentionedInPosts' : false,
+		'appSuggestions'      : false,
+		'trending'            : false,
+		'suggestedPages'      : false
 	};
 
 	FB.suggestedPosts = function () {
@@ -270,6 +271,37 @@ if ( window.top === window.self ) {
 
 					if ( target.style.display !== 'none' ) {
 						console.log( 'Removed via post.' );
+						target.style.display = 'none';
+					}
+				} else if ( target.parentNode ) {
+					loopBack( target.parentNode );
+				}
+			};
+
+			for ( var i in tags ) {
+
+				if ( tags[ i ].textContent
+					&& tags[ i ].textContent.indexOf( searchText ) > -1
+					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				) {
+				    loopBack( tags[ i ] );
+				}
+			}
+		};
+	};
+
+	FB.wasMentionedInPosts = function () {
+
+		this.events = [ 'scroll' ];
+		this.run    = function () {
+			var tags       = document.getElementsByTagName( 'span' );
+			var searchText = ' was mentioned in ';
+			var loopBack   = function ( target ) {
+
+				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+
+					if ( target.style.display !== 'none' ) {
+						console.log( 'Removed was mentioned in post.' );
 						target.style.display = 'none';
 					}
 				} else if ( target.parentNode ) {
