@@ -323,7 +323,8 @@ if ( window.top === window.self ) {
 
 	FB.appSuggestions = function () {
 
-		this.run    = function () {
+        this.events = [ 'scroll' ];
+        this.run    = function () {
 
 			waitFor( '#pagelet_canvas_nav_content', function ( element ) {
 				element.remove();
@@ -334,7 +335,8 @@ if ( window.top === window.self ) {
 
 	FB.trending = function () {
 
-		this.run    = function () {
+        this.events = [ 'scroll' ];
+        this.run    = function () {
 
 			waitFor( '#pagelet_trending_tags_and_topics', function ( element ) {
 
@@ -345,6 +347,7 @@ if ( window.top === window.self ) {
 
 	FB.suggestedPages = function () {
 
+        this.events = [ 'scroll' ];
 		this.run    = function () {
 
 			waitFor( '#pagelet_ego_pane', function ( element ) {
