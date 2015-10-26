@@ -2,7 +2,7 @@
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
 // //@run-at document-end
-// @version		1.0.8
+// @version		1.0.9
 // @grant		none
 // ==/UserScript==
 
@@ -22,6 +22,51 @@ var waitFor = function ( locator, callBack ) {
 			}, 1 );
 		}
 	}
+};
+
+var removePost = function ( target ) {
+
+	if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+
+		if ( target.style.display !== 'none' ) {
+			target.style.display = 'none';
+		}
+
+	} else if ( target.parentNode ) {
+		removePost( target.parentNode );
+	}
+};
+
+var queue = {};
+var queueLast;
+var queueTimeout;
+
+var filterElements = function ( element, condition ) {
+
+	if ( !queue[ element ] ) {
+		queue[ element ] = [];
+	}
+
+	queue[ element ].push( condition );
+
+	clearTimeout( queueTimeout );
+
+	queueTimeout = setTimeout( function () {
+
+		for ( var type in queue ) {
+			var last;
+
+			var tags     = document.getElementsByTagName( type );
+			var contains = tags.indexOf( queueLast[ type ] );
+
+			for ( var i = ( ( contains > 0 ) ? contains : 0 ); i < tags.length; i++ ) {
+				queue[ type ]( tags[ i ] );
+				last = tags[ i ];
+			}
+
+			queueLast[ type ] = last;
+		}
+	}, 10 );
 };
 
 if ( window.top === window.self ) {
@@ -46,28 +91,12 @@ if ( window.top === window.self ) {
 		this.events = [ 'scroll' ];
 		this.run    = function () {
 
-			var tags       = document.getElementsByTagName( 'span' );
-			var searchText = 'Suggested Post';
-			var loopBack   = function ( target ) {
+			filterElements( 'span', function ( element ) {
 
-				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
-
-					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed sponsored post.' );
-						target.style.display = 'none';
-					}
-
-				} else if ( target.parentNode ) {
-					loopBack( target.parentNode );
+				if ( element.textContent == 'Suggested Post' ) {
+					removePost( element )
 				}
-			};
-
-			for ( var i = 0; i < tags.length; i++ ) {
-
-				if ( tags[ i ].textContent == searchText ) {
-					loopBack( tags[ i ] );
-				}
-			}
+			} );
 		}
 	};
 
@@ -76,27 +105,12 @@ if ( window.top === window.self ) {
 		this.events = [ 'scroll' ];
 		this.run    = function () {
 
-			var tags       = document.getElementsByTagName( 'a' );
-			var searchText = 'Sponsored';
-			var loopBack   = function ( target ) {
+			filterElements( 'a', function ( element ) {
 
-				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
-
-					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed sponsored post.' );
-						target.style.display = 'none';
-					}
-				} else if ( target.parentNode ) {
-					loopBack( target.parentNode );
+				if ( tags[ i ].textContent == 'Sponsored' ) {
+					removePost( tags[ i ] );
 				}
-			};
-
-			for ( var i = 0; i < tags.length; i++ ) {
-
-				if ( tags[ i ].textContent == searchText ) {
-					loopBack( tags[ i ] );
-				}
-			}
+			} );
 		};
 	};
 
@@ -105,30 +119,15 @@ if ( window.top === window.self ) {
 		this.events = [ 'scroll' ];
 		this.run    = function () {
 
-			var tags       = document.getElementsByTagName( 'span' );
-			var searchText = 'Sponsored';
-			var loopBack   = function ( target ) {
+			filterElements( 'span', function ( element ) {
 
-				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
-
-					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed liked post.' );
-						target.style.display = 'none';
-					}
-				} else if ( target.parentNode ) {
-					loopBack( target.parentNode );
-				}
-			};
-
-			for ( var i in tags ) {
-
-				if ( tags[ i ].textContent
-					&& tags[ i ].textContent.indexOf( 'liked this' ) > -1
-					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				if ( element.textContent
+					&& element.textContent.indexOf( 'liked this' ) > -1
+					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
 				) {
-				    loopBack( tags[ i ] );
+					removePost( element );
 				}
-			}
+			} );
 		}
 	};
 
@@ -137,30 +136,15 @@ if ( window.top === window.self ) {
 		this.events = [ 'scroll' ];
 		this.run    = function () {
 
-			var tags       = document.getElementsByTagName( 'span' );
-			var searchText = 'commented on';
-			var loopBack   = function ( target ) {
+			filterElements( 'span', function ( element ) {
 
-				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
-
-					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed commented on post.' );
-						target.style.display = 'none';
-					}
-				} else if ( target.parentNode ) {
-					loopBack( target.parentNode );
-				}
-			};
-
-			for ( var i in tags ) {
-
-				if ( tags[ i ].textContent
-					&& tags[ i ].textContent.indexOf( searchText ) > -1
+				if ( element.textContent
+					&& tags[ i ].textContent.indexOf( 'commented on' ) > -1
 					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
 				) {
-				    loopBack( tags[ i ] );
+					removePost( tags[ i ] );
 				}
-			}
+			} );
 		};
 	};
 
@@ -169,30 +153,15 @@ if ( window.top === window.self ) {
 		this.events = [ 'scroll' ];
 		this.run    = function () {
 
-			var tags       = document.getElementsByTagName( 'span' );
-			var searchText = 'replied to';
-			var loopBack   = function ( target ) {
+			filterElements( 'span', function ( element ) {
 
-				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
-
-					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed replied to post.' );
-						target.style.display = 'none';
-					}
-				} else if ( target.parentNode ) {
-					loopBack( target.parentNode );
-				}
-			};
-
-			for ( var i in tags ) {
-
-				if ( tags[ i ].textContent
-					&& tags[ i ].textContent.indexOf( searchText ) > -1
-					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				if ( element.textContent
+					&& element.textContent.indexOf( 'replied to' ) > -1
+					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
 				) {
-				    loopBack( tags[ i ] );
+					removePost( element );
 				}
-			}
+			} );
 		};
 	};
 
@@ -200,30 +169,16 @@ if ( window.top === window.self ) {
 
 		this.events = [ 'scroll' ];
 		this.run    = function () {
-			var tags       = document.getElementsByTagName( 'span' );
-			var searchText = ' tagged in ';
-			var loopBack   = function ( target ) {
 
-				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+			filterElements( 'span', function ( element ) {
 
-					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed tagged in post.' );
-						target.style.display = 'none';
-					}
-				} else if ( target.parentNode ) {
-					loopBack( target.parentNode );
-				}
-			};
-
-			for ( var i in tags ) {
-
-				if ( tags[ i ].textContent
-					&& tags[ i ].textContent.indexOf( searchText ) > -1
-					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				if ( element.textContent
+					&& element.textContent.indexOf( ' tagged in ' ) > -1
+					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
 				) {
-				    loopBack( tags[ i ] );
+					removePost( element );
 				}
-			}
+			} );
 		};
 	};
 
@@ -232,30 +187,15 @@ if ( window.top === window.self ) {
 		this.events = [ 'scroll' ];
 		this.run    = function () {
 
-			var tags       = document.getElementsByTagName( 'span' );
-			var searchText = ' shared ';
-			var loopBack   = function ( target ) {
+			filterElements( 'span', function ( element ) {
 
-				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
-
-					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed shared post.' );
-						target.style.display = 'none';
-					}
-				} else if ( target.parentNode ) {
-					loopBack( target.parentNode );
-				}
-			};
-
-			for ( var i in tags ) {
-
-				if ( tags[ i ].textContent
-					&& tags[ i ].textContent.indexOf( searchText ) > -1
-					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				if ( element.textContent
+					&& element.textContent.indexOf( ' shared ' ) > -1
+					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
 				) {
-				    loopBack( tags[ i ] );
+					removePost( element );
 				}
-			}
+			} );
 		};
 	};
 
@@ -263,30 +203,16 @@ if ( window.top === window.self ) {
 
 		this.events = [ 'scroll' ];
 		this.run    = function () {
-			var tags       = document.getElementsByTagName( 'span' );
-			var searchText = ' via ';
-			var loopBack   = function ( target ) {
 
-				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+			filterElements( 'span', function ( element ) {
 
-					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed via post.' );
-						target.style.display = 'none';
-					}
-				} else if ( target.parentNode ) {
-					loopBack( target.parentNode );
-				}
-			};
-
-			for ( var i in tags ) {
-
-				if ( tags[ i ].textContent
-					&& tags[ i ].textContent.indexOf( searchText ) > -1
-					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				if ( element.textContent
+					&& element.textContent.indexOf( ' via ' ) > -1
+					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
 				) {
-				    loopBack( tags[ i ] );
+					removePost( element );
 				}
-			}
+			} );
 		};
 	};
 
@@ -294,30 +220,16 @@ if ( window.top === window.self ) {
 
 		this.events = [ 'scroll' ];
 		this.run    = function () {
-			var tags       = document.getElementsByTagName( 'span' );
-			var searchText = ' was mentioned in ';
-			var loopBack   = function ( target ) {
 
-				if ( getComputedStyle( target ).borderLeftStyle === 'solid' ) {
+			filterElements( 'span', function ( element ) {
 
-					if ( target.style.display !== 'none' ) {
-						console.log( 'Removed was mentioned in post.' );
-						target.style.display = 'none';
-					}
-				} else if ( target.parentNode ) {
-					loopBack( target.parentNode );
-				}
-			};
-
-			for ( var i in tags ) {
-
-				if ( tags[ i ].textContent
-					&& tags[ i ].textContent.indexOf( searchText ) > -1
-					&& getComputedStyle( tags[ i ] ).color.toString() == 'rgb(145, 151, 163)'
+				if ( element.textContent
+					&& element.textContent.indexOf( ' was mentioned in ' ) > -1
+					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
 				) {
-				    loopBack( tags[ i ] );
+					removePost( element );
 				}
-			}
+			} );
 		};
 	};
 
