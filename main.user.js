@@ -2,7 +2,7 @@
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
 // //@run-at document-end
-// @version		1.1.0
+// @version		1.1.1
 // @grant		none
 // ==/UserScript==
 var queue     = {};
@@ -19,6 +19,7 @@ var options = {
 	'sharedPosts'         : true,
 	'viaPosts'            : true,
 	'wasMentionedInPosts' : false,
+	'wroteOnPosts'        : false,
 	'appSuggestions'      : false,
 	'trending'            : false,
 	'suggestedPages'      : false
@@ -165,6 +166,23 @@ FB.wasMentionedInPosts = function () {
 
 			if ( element.textContent
 				&& element.textContent.indexOf( ' was mentioned in ' ) > -1
+				&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
+			) {
+				removePost( element );
+			}
+		} );
+	};
+};
+
+FB.wroteOnPosts = function () {
+
+	this.events = [ 'change' ];
+	this.run    = function () {
+
+		filterElements( 'span', function ( element ) {
+
+			if ( element.textContent
+				&& element.textContent.indexOf( ' wrote on ' ) > -1
 				&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
 			) {
 				removePost( element );
