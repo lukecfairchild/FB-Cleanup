@@ -2,7 +2,7 @@
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
 // //@run-at document-end
-// @version		1.1.2
+// @version		1.1.3
 // @grant		none
 // ==/UserScript==
 
@@ -27,7 +27,8 @@
 		'gamesYouMayLike'     : false,
 		'appSuggestions'      : false,
 		'trending'            : false,
-		'suggestedPages'      : false
+		'suggestedPages'      : false,
+		'recommendedGames'    : false
 	};
 
 	FB.suggestedPosts = function () {
@@ -216,8 +217,20 @@
 		this.run = function () {
 
 			util.waitFor( '#pagelet_canvas_nav_content', function ( element ) {
+
 				element.remove();
 				document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
+			});
+		}
+	};
+
+	FB.recommendedGames = function () {
+
+		this.run = function () {
+
+			util.waitFor( '#pagelet_games_rhc', function ( element ) {
+
+				element.remove();
 			});
 		}
 	};
