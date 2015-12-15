@@ -2,7 +2,7 @@
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
 // //@run-at document-end
-// @version		1.1.3
+// @version		1.1.4
 // @grant		none
 // ==/UserScript==
 
@@ -214,9 +214,10 @@
 
 	FB.appSuggestions = function () {
 
-		this.run = function () {
+		this.events = [ 'change' ];
+		this.run    = function () {
 
-			util.waitFor( '#pagelet_canvas_nav_content', function ( element ) {
+			util.find( '#pagelet_canvas_nav_content', function ( element ) {
 
 				element.remove();
 				document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
@@ -226,9 +227,10 @@
 
 	FB.recommendedGames = function () {
 
-		this.run = function () {
+		this.events = [ 'change' ];
+		this.run    = function () {
 
-			util.waitFor( '#pagelet_games_rhc', function ( element ) {
+			util.find( '#pagelet_games_rhc', function ( element ) {
 
 				element.remove();
 			});
@@ -237,9 +239,10 @@
 
 	FB.trending = function () {
 
-		this.run = function () {
+		this.events = [ 'change' ];
+		this.run    = function () {
 
-			util.waitFor( '#pagelet_trending_tags_and_topics', function ( element ) {
+			util.find( '#pagelet_trending_tags_and_topics', function ( element ) {
 
 				element.remove();
 			} );
@@ -248,9 +251,10 @@
 
 	FB.suggestedPages = function () {
 
-		this.run = function () {
+		this.events = [ 'change' ];
+		this.run    = function () {
 
-			util.waitFor( '#pagelet_ego_pane', function ( element ) {
+			util.find( '#pagelet_ego_pane', function ( element ) {
 
 				element.remove();
 			} );
@@ -270,6 +274,18 @@
 
 					util.waitFor( locator, callBack );
 				}, 1 );
+			}
+		}
+	};
+
+	util.find = function ( locator, callBack ) {
+
+		if ( typeof locator === 'string' ) {
+			var check = document.querySelector( locator );
+
+			if ( check ) {
+				callBack( check );
+
 			}
 		}
 	};
