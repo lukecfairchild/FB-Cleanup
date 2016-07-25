@@ -67,9 +67,8 @@
 			util.filterElements( 'span', function ( element ) {
 
 				if ( element.textContent
-					&& element.textContent.indexOf( 'liked this' ) > -1
-					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
-				) {
+				&&   element.textContent.indexOf( 'liked this' ) > -1 ) {
+
 					util.removePost( element );
 				}
 			} );
@@ -84,9 +83,8 @@
 			util.filterElements( 'span', function ( element ) {
 
 				if ( element.textContent
-					&& element.textContent.indexOf( 'commented on' ) > -1
-					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
-				) {
+					&& element.textContent.indexOf( 'commented on' ) > -1 ) {
+
 					util.removePost( element );
 				}
 			} );
@@ -101,9 +99,9 @@
 			util.filterElements( 'span', function ( element ) {
 
 				if ( element.textContent
-					&& element.textContent.indexOf( 'replied to' ) > -1
-					&& getComputedStyle(element).color.toString() == 'rgb(145, 151, 163)'
-				) {
+				&&   element.textContent.indexOf( 'replied to' ) > -1 ) {
+
+					element.style.backgroundColor = '000000';
 					util.removePost( element );
 				}
 			});
@@ -118,9 +116,8 @@
 			util.filterElements( 'span', function ( element ) {
 
 				if ( element.textContent
-					&& element.textContent.indexOf( ' tagged in ' ) > -1
-					&& getComputedStyle(element).color.toString() == 'rgb(145, 151, 163)'
-				) {
+				&&   element.textContent.indexOf( ' tagged in ' ) > -1 ) {
+
 					util.removePost( element );
 				}
 			} );
@@ -135,9 +132,8 @@
 			util.filterElements( 'span', function ( element ) {
 
 				if ( element.textContent
-					&& element.textContent.indexOf( ' shared ' ) > -1
-					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
-				) {
+				&&   element.textContent.indexOf( ' shared ' ) > -1 ) {
+
 					util.removePost( element );
 				}
 			} );
@@ -152,9 +148,8 @@
 			util.filterElements( 'span', function ( element ) {
 
 				if ( element.textContent
-					&& element.textContent.indexOf( ' via ' ) > -1
-					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
-				) {
+				&&   element.textContent.indexOf( ' via ' ) > -1 ) {
+
 					util.removePost( element );
 				}
 			} );
@@ -169,9 +164,8 @@
 			util.filterElements( 'span', function ( element ) {
 
 				if ( element.textContent
-					&& element.textContent.indexOf( ' was mentioned in ' ) > -1
-					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
-				) {
+				&&   element.textContent.indexOf( ' was mentioned in ' ) > -1 ) {
+
 					util.removePost( element );
 				}
 			});
@@ -186,9 +180,8 @@
 			util.filterElements( 'span', function ( element ) {
 
 				if ( element.textContent
-					&& element.textContent.indexOf( ' wrote on ' ) > -1
-					&& getComputedStyle( element ).color.toString() == 'rgb(145, 151, 163)'
-				) {
+				&&   element.textContent.indexOf( ' wrote on ' ) > -1 ) {
+
 					util.removePost( element );
 				}
 			} );
@@ -264,10 +257,10 @@
 	util.waitFor = function ( locator, callBack ) {
 
 		if ( typeof locator === 'string' ) {
-			var check = document.querySelector( locator );
+			var check = document.querySelector( locator );
 
-			if ( check ) {
-				callBack( check );
+			if ( check ) {
+				callBack( check );
 
 			} else {
 				setTimeout( function () {
@@ -281,10 +274,10 @@
 	util.find = function ( locator, callBack ) {
 
 		if ( typeof locator === 'string' ) {
-			var check = document.querySelector( locator );
+			var check = document.querySelector( locator );
 
-			if ( check ) {
-				callBack( check );
+			if ( check ) {
+				callBack( check );
 
 			}
 		}
@@ -292,47 +285,47 @@
 
 	util.removePost = function ( target ) {
 
-		if ( target.hasAttribute( 'data-cursor' ) ) {
+		if ( target.hasAttribute( 'data-cursor' ) ) {
 
 			if ( target.style.display !== 'none' ) {
 				target.style.display = 'none';
 			}
 
 		} else if ( target.parentNode ) {
-			util.removePost( target.parentNode );
+			util.removePost( target.parentNode );
 		}
 	};
 
-	util.filterElements = function ( element, condition ) {
+	util.filterElements = function ( element, callBack ) {
 
-		if ( !queue[ element ] ) {
-			queue[ element ] = [];
+		if ( !queue[ element ] ) {
+			queue[ element ] = [];
 		}
 
-		queue[ element ].push( condition );
+		queue[ element ].push( callBack );
 
-		clearTimeout( queueTimeout );
+		clearTimeout( queueTimeout );
 
 		queueTimeout = setTimeout( function () {
 
-			for ( var type in queue ) {
+			for ( var type in queue ) {
 
-				if ( queue.hasOwnProperty( type ) ) {
+				if ( queue.hasOwnProperty( type ) ) {
 					var last;
 					var contains;
 
-					var tags = document.getElementsByTagName( type );
+					var tags = document.getElementsByTagName( type );
 
-					if ( queueLast[ type ] ) {
-						contains = tags.indexOf( queueLast[ type ] );
+					if ( queueLast[ type ] ) {
+						contains = tags.indexOf( queueLast[ type ] );
 					}
 
-					for ( var func in queue[ type ] ) {
+					for ( var func in queue[ type ] ) {
 
-						if ( queue[ type ].hasOwnProperty( func ) ) {
+						if ( queue[ type ].hasOwnProperty( func ) ) {
 
-							for ( var i = ( ( contains > 0 ) ? contains : 0 ); i < tags.length; i++ ) {
-								queue[ type ][ func ]( tags[ i ] );
+							for ( var i = ( ( contains > 0 ) ? contains : 0 ); i < tags.length; i++ ) {
+								queue[ type ][ func ]( tags[ i ] );
 							}
 
 							last = tags[ i ];
@@ -347,42 +340,41 @@
 
 	if ( window.top === window.self ) {
 		var active   = [];
-		var observer = new MutationObserver( function ( mutations ) {
+		var observer = new MutationObserver( function ( mutations ) {
 
-			for ( var i in active ) {
+			for ( var i in active ) {
 
-				if ( active.hasOwnProperty( i ) ) {
+				if ( active.hasOwnProperty( i ) ) {
 					active[ i ]();
 				}
 			}
 		} );
 
-		observer.observe( document.body, {
+		observer.observe( document.body, {
 			'attributes'    : true,
 			'childList'     : true,
 			'characterData' : true
 		} );
 
-		for ( var func in FB ) {
+		for ( var func in FB ) {
 
-			if ( FB.hasOwnProperty( func ) ) {
+			if ( FB.hasOwnProperty( func ) ) {
 
-				if ( !options[ func ] ) {
+				if ( !options[ func ] ) {
 
-					( function ( func ) {
+					( function ( func ) {
 
 						func.run();
 
-						if ( func.events ) {
+						if ( func.events ) {
 
-							for ( var i in func.events ) {
+							for ( var i in func.events ) {
 
-								if ( func.events.hasOwnProperty( i ) ) {
+								if ( func.events.hasOwnProperty( i ) ) {
 
-									if ( func.events[ i ] == 'change' ) {
+									if ( func.events[ i ] == 'change' ) {
 										active.push( func.run );
 									}
-									// window.addEventListener( func.events[ i ], func.run );
 								}
 							}
 						}
