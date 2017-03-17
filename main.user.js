@@ -1,8 +1,7 @@
 // ==UserScript==
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
-// //@run-at document-end
-// @version		1.1.5
+// @version		1.1.6
 // @grant		none
 // ==/UserScript==
 
@@ -28,7 +27,8 @@
 		'appSuggestions'      : false,
 		'trending'            : false,
 		'suggestedPages'      : false,
-		'recommendedGames'    : false
+		'recommendedGames'    : false,
+		'showMoreStories'     : false
 	};
 
 	FB.suggestedPosts = function () {
@@ -43,6 +43,61 @@
 				}
 			} );
 		}
+	};
+
+	FB.showMoreStories = function () {
+
+		var lastScroll = 0;
+
+		this.events = [ 
+			'change', 
+			'scroll'
+		];
+
+		this.run = function ( event ) {
+
+			util.filterElements( 'span', function ( element ) {
+
+				if ( element.textContent == 'More Stories' ) {
+					var parent = element.parentElement;
+
+					var elementInViewport2 = function ( el ) {
+
+						var top    = el.offsetTop;
+						var left   = el.offsetLeft;
+						var width  = el.offsetWidth;
+						var height = el.offsetHeight;
+
+						while ( el.offsetParent ) {
+							el    = el.offsetParent;
+							top  += el.offsetTop;
+							left += el.offsetLeft;
+						}
+
+						return ( top < ( window.pageYOffset + window.innerHeight )
+							&& left < ( window.pageXOffset + window.innerWidth )
+							&& ( top + height ) > window.pageYOffset
+							&& ( left + width ) > window.pageXOffset
+						);
+					}
+
+					if ( elementInViewport2( parent ) ) {
+
+						console.log( 'IT WAS SEEN!!!!' );
+
+						if ( parent.fireEvent ) {
+							parent.fireEvent( 'onclick' );
+
+						} else {
+							var evObj = document.createEvent( 'Events' );
+
+							evObj.initEvent( 'click', true, false );
+							parent.dispatchEvent( evObj );
+						}
+					}
+                }
+            } );
+		};
 	};
 
 	FB.sponsoredPosts = function () {
@@ -339,15 +394,64 @@
 	};
 
 	if ( window.top === window.self ) {
-		var active   = [];
+		var changes = [];
+		var scrolls = [];
+
+		var lastChange = 0;
+		var lastScroll = 0;
+
 		var observer = new MutationObserver( function ( mutations ) {
 
-			for ( var i in active ) {
+			var currentTime = ( new Date() ).getTime();
 
-				if ( active.hasOwnProperty( i ) ) {
-					active[ i ]();
-				}
+			if ( lastChange + 100 < currentTime ) {
+
+				lastChange = currentTime;
+
+				return;
 			}
+
+			lastChange = Infinity;
+
+			setTimeout( function () {
+
+				lastChange = 0;
+
+				for ( var i in changes ) {
+
+					if ( changes.hasOwnProperty( i ) ) {
+						changes[ i ]();
+					}
+				}
+			}, 1000 );
+		} );
+
+		window.addEventListener( 'scroll', function () {
+
+			var currentTime = ( new Date() ).getTime();
+
+			if ( event
+			&&   event.type === 'scroll'
+			&&   lastScroll + 100 < currentTime ) {
+
+				lastScroll = currentTime;
+
+				return;
+			}
+
+			lastScroll = Infinity;
+
+			setTimeout( function () {
+
+				lastScroll = 0;
+
+				for ( var i in scrolls ) {
+
+					if ( scrolls.hasOwnProperty( i ) ) {
+						scrolls[ i ]();
+					}
+				}
+			}, 1000 );
 		} );
 
 		observer.observe( document.body, {
@@ -373,7 +477,11 @@
 								if ( func.events.hasOwnProperty( i ) ) {
 
 									if ( func.events[ i ] == 'change' ) {
-										active.push( func.run );
+										changes.push( func.run );
+									}
+
+									if ( func.events[ i ] == 'scroll' ) {
+										scrolls.push( func.run );
 									}
 								}
 							}
