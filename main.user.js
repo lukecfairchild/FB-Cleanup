@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
-// @version		1.1.6
+// @version		1.1.7
 // @grant		none
 // ==/UserScript==
 
@@ -278,7 +278,7 @@
 		this.events = [ 'change' ];
 		this.run    = function () {
 
-			util.find( '#pagelet_games_rhc', function ( element ) {
+			util.find( '#pagelet_canvas_nav_content', function ( element ) {
 
 				element.remove();
 			});
