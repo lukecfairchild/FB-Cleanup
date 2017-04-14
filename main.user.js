@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
-// @version		1.1.8
+// @version		1.1.9
 // @grant		none
 // ==/UserScript==
 
@@ -262,10 +262,10 @@
 
 	FB.appSuggestions = function () {
 
-		this.events = [ 'change', 'load', 'scroll' ];
+		this.events = [ 'change', 'load' ];
 		this.run    = function () {
 
-			util.find( '#pagelet_canvas_nav_content', function ( element ) {
+			util.waitFor( '#pagelet_canvas_nav_content', function ( element ) {
 
 				element.remove();
 				document.getElementsByClassName( 'fbChatSidebarBody' )[ 0 ].style.height = '100%';
