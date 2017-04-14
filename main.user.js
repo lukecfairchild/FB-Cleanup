@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
-// @version		1.1.7
+// @version		1.1.8
 // @grant		none
 // ==/UserScript==
 
