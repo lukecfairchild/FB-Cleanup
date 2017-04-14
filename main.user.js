@@ -262,7 +262,7 @@
 
 	FB.appSuggestions = function () {
 
-		this.events = [ 'change' ];
+		this.events = [ 'change', 'load', 'scroll' ];
 		this.run    = function () {
 
 			util.find( '#pagelet_canvas_nav_content', function ( element ) {
