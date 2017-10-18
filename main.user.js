@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
-// @version		1.1.9
+// @version		1.2.0
 // @grant		none
 // ==/UserScript==
 
@@ -50,8 +50,7 @@
 		var lastScroll = 0;
 
 		this.events = [ 
-			'change', 
-			'scroll'
+			'change'
 		];
 
 		this.run = function ( event ) {
@@ -426,6 +425,7 @@
 			}, 1000 );
 		} );
 
+		/* This causes way too much latency when scrolling.
 		window.addEventListener( 'scroll', function () {
 
 			var currentTime = ( new Date() ).getTime();
@@ -453,6 +453,7 @@
 				}
 			}, 1000 );
 		} );
+		*/
 
 		observer.observe( document.body, {
 			'attributes'    : true,
