@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name	FB Cleanup
 // @include	https://www.facebook.com/*
-// @version		1.2.0
+// @version		1.2.1
 // @grant		none
 // ==/UserScript==
 
@@ -28,7 +28,17 @@
 		'trending'            : false,
 		'suggestedPages'      : false,
 		'recommendedGames'    : false,
-		'showMoreStories'     : false
+		'showMoreStories'     : false,
+		'topStories'          : false
+	};
+	
+	FB.topStories = function () {
+
+		this.events = [ 'load' ];
+		this.run    = function () {
+
+			document.querySelectorAll( 'a[href="https://www.facebook.com/?ref=logo"')[ 0 ].href = 'https://www.facebook.com/?sk=h_chr';
+		}
 	};
 
 	FB.suggestedPosts = function () {
